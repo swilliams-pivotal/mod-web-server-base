@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 the original author or authors.
+ * Copyright 2011-2013 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,9 +26,11 @@ import org.vertx.java.core.sockjs.SockJSServer;
 import java.io.File;
 
 /**
- * A simple web server module that can serve static files, and also can
- * bridge event bus messages to/from client side JavaScript and the server side
- * event bus.
+ * The base class for a  simple web server module that can serve static files, 
+ * and also can bridge event bus messages to/from client side JavaScript and 
+ * the server side event bus.
+ *
+ * Extend this class to customise it using a RouteMatcher.
  *
  * Please see the modules manual for full description of what configuration
  * parameters it takes.
