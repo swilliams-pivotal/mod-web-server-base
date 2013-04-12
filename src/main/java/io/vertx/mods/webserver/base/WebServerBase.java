@@ -14,9 +14,11 @@
  * limitations under the License.
  */
 
-package org.vertx.mods;
+package io.vertx.mods.webserver.base;
 
 import org.vertx.java.busmods.BusModBase;
+import org.vertx.java.core.Handler;
+import org.vertx.java.core.VoidResult;
 import org.vertx.java.core.http.HttpServer;
 import org.vertx.java.core.http.RouteMatcher;
 import org.vertx.java.core.json.JsonArray;
@@ -36,7 +38,8 @@ import java.io.File;
  * parameters it takes.
  *
  * @author <a href="http://tfox.org">Tim Fox</a>
- * @author pidster
+ * @author swilliams
+ * 
  */
 public abstract class WebServerBase extends BusModBase {
 
@@ -44,16 +47,10 @@ public abstract class WebServerBase extends BusModBase {
   private String indexPage;
   private boolean gzipFiles;
 
-  public void start() {
-    super.start();
+  public void start(final VoidResult result) {
+    start();
 
     HttpServer server = vertx.createHttpServer();
-
-    gzipFiles = getOptionalBooleanConfig("gzip_files", false);
-    String webRoot = getOptionalStringConfig("web_root", "web");
-    String index = getOptionalStringConfig("index_page", "index.html");
-    webRootPrefix = webRoot + File.separator;
-    indexPage = webRootPrefix + index;
 
     if (getOptionalBooleanConfig("ssl", false)) {
       server.setSSL(true).setKeyStorePassword(getOptionalStringConfig("key_store_password", "wibble"))
@@ -64,7 +61,7 @@ public abstract class WebServerBase extends BusModBase {
       server.requestHandler(routeMatcher());
     }
     else if (getOptionalBooleanConfig("static_files", true)) {
-      server.requestHandler(new StaticHttpResourceHandler(webRootPrefix, indexPage, gzipFiles));
+      server.requestHandler(new StaticHttpResourceHandler(vertx.fileSystem(), webRootPrefix, indexPage, gzipFiles));
     }
 
     boolean bridge = getOptionalBooleanConfig("bridge", false);
@@ -79,7 +76,18 @@ public abstract class WebServerBase extends BusModBase {
                        getOptionalStringConfig("auth_address", "vertx.basicauthmanager.authorise"));
     }
 
-    server.listen(getOptionalIntConfig("port", 80), getOptionalStringConfig("host", "0.0.0.0"));
+    gzipFiles = getOptionalBooleanConfig("gzip_files", false);
+    String webRoot = getOptionalStringConfig("web_root", "web");
+    String index = getOptionalStringConfig("index_page", "index.html");
+    webRootPrefix = webRoot + File.separator;
+    indexPage = webRootPrefix + index;
+
+    server.listen(getOptionalIntConfig("port", 80), getOptionalStringConfig("host", "0.0.0.0"), new Handler<HttpServer>() {
+      @Override
+      public void handle(HttpServer event) {
+        result.setResult();
+      }
+    });
   }
 
   protected abstract RouteMatcher routeMatcher();
