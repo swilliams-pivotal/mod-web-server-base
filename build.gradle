@@ -69,12 +69,12 @@ test {
   testLogging { exceptionFormat "full" }
 }
 
-task publishSnapshot(dependsOn: ['check', 'publishMavenPublicationToSnapshotsRepository', 'publishMavenJarPublicationToSnapshotsRepository']) {
+task publishSnapshot(dependsOn: ['check', 'publishMavenPublicationToSnapshotsRepository']) {
   description = 'Publish to Maven Central (Snapshot) Repo'
   group = 'vert.x'
 }
 
-task publishRelease(dependsOn: ['check', 'publishMavenPublicationToStagingRepository', 'publishMavenJarPublicationToStagingRepository']) {
+task publishRelease(dependsOn: ['check', 'publishMavenPublicationToStagingRepository']) {
   description = 'Publish to Maven Central (Staging) Repo'
   group = 'vert.x'
 
