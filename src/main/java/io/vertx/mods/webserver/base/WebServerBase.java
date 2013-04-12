@@ -50,6 +50,8 @@ public abstract class WebServerBase extends BusModBase {
   public void start(final VoidResult result) {
     start();
 
+    initialise(result);
+
     HttpServer server = vertx.createHttpServer();
 
     if (getOptionalBooleanConfig("ssl", false)) {
@@ -88,6 +90,10 @@ public abstract class WebServerBase extends BusModBase {
         result.setResult();
       }
     });
+  }
+
+  protected void initialise(VoidResult result) {
+    
   }
 
   protected abstract RouteMatcher routeMatcher();

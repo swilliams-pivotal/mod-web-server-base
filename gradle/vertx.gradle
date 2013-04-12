@@ -51,6 +51,10 @@ publishing {
         builtBy zipMod
       }
     }
+    mavenJar(MavenPublication) {
+      mavenProjectIdentity.artifactId = project.moduleName
+      from components.java
+    }
   }
 }
 
