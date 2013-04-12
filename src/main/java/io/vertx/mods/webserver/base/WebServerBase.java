@@ -59,13 +59,6 @@ public abstract class WebServerBase extends BusModBase {
                          .setKeyStorePath(getOptionalStringConfig("key_store_path", "server-keystore.jks"));
     }
 
-    if (getOptionalBooleanConfig("route_matcher", false)) {
-      server.requestHandler(routeMatcher());
-    }
-    else if (getOptionalBooleanConfig("static_files", true)) {
-      server.requestHandler(new StaticHttpResourceHandler(vertx.fileSystem(), webRootPrefix, indexPage, gzipFiles));
-    }
-
     boolean bridge = getOptionalBooleanConfig("bridge", false);
     if (bridge) {
       SockJSServer sjsServer = vertx.createSockJSServer(server);
@@ -83,6 +76,14 @@ public abstract class WebServerBase extends BusModBase {
     String index = getOptionalStringConfig("index_page", "index.html");
     webRootPrefix = webRoot + File.separator;
     indexPage = webRootPrefix + index;
+
+    // needs to be after all config is set
+    if (getOptionalBooleanConfig("route_matcher", false)) {
+      server.requestHandler(routeMatcher());
+    }
+    else if (getOptionalBooleanConfig("static_files", true)) {
+      server.requestHandler(new StaticHttpResourceHandler(vertx.fileSystem(), webRootPrefix, indexPage, gzipFiles));
+    }
 
     server.listen(getOptionalIntConfig("port", 80), getOptionalStringConfig("host", "0.0.0.0"), new Handler<HttpServer>() {
       @Override

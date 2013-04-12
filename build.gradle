@@ -25,7 +25,7 @@ defaultTasks = ['assemble']
 sourceCompatibility = '1.7'
 targetCompatibility = '1.7'
 
-jar.enabled = true // We do produce a jar!
+// jar.enabled = true // We do produce a jar!
 
 repositories {
   mavenLocal()
@@ -69,12 +69,12 @@ test {
   testLogging { exceptionFormat "full" }
 }
 
-task publishSnapshot(dependsOn: ['check', 'publishMavenPublicationToSnapshotsRepository']) {
+task publishSnapshot(dependsOn: ['check', 'publishMavenPublicationToSnapshotsRepository', 'publishMavenJarPublicationToSnapshotsRepository']) {
   description = 'Publish to Maven Central (Snapshot) Repo'
   group = 'vert.x'
 }
 
-task publishRelease(dependsOn: ['check', 'publishMavenPublicationToStagingRepository']) {
+task publishRelease(dependsOn: ['check', 'publishMavenPublicationToStagingRepository', 'publishMavenJarPublicationToStagingRepository']) {
   description = 'Publish to Maven Central (Staging) Repo'
   group = 'vert.x'
 
